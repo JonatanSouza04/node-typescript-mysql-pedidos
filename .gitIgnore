@@ -6,3 +6,4 @@ build/
 coverage
 ormconfig.json
 build
+*.pdf

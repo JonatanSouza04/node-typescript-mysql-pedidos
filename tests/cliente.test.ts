@@ -29,11 +29,10 @@ describe('Teste no módulo de clientes', () => {
             nome: 'TESTE UPDATE',
             cpf: '12345678950',
             email: 'teste@teste.com.br',
-            sexo: 'masculino',
-            id: getCodigo[0].id
+            sexo: 'masculino'
        }
 
-       const data = await Cliente.update_clientes(body);
+       const data = await Cliente.update_clientes(body, parseInt(getCodigo[0].id));
        expect(data).toHaveProperty('data');
 
      });
@@ -48,9 +47,16 @@ describe('Teste no módulo de clientes', () => {
      });
 
 
-     it('(GET) ALL http://.../clientes', async () => {
+    it('(GET) ALL http://.../clientes', async () => {
 
        const data = await Cliente.get_clientes();
+       expect.arrayContaining(data);
+
+    });
+
+    it('(GET) CODE http://.../clientes', async () => {
+
+       const data = await Cliente.get_cliente_codigo(code);
        expect.arrayContaining(data);
 
     });

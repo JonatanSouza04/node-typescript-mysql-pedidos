@@ -39,7 +39,7 @@
     FOREIGN KEY(forma_pagto) REFERENCES forma_pagto(id)
   );
 
-    CREATE TABLE pedidos_itens (
+   CREATE TABLE pedidos_itens (
     id INT(6) AUTO_INCREMENT PRIMARY KEY,
     pedido INT(6),
     produto INT(6),

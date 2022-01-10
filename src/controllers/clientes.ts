@@ -58,13 +58,13 @@ class ClienteController {
 
       public async put( req: Request, res: Response): Promise<Response> {
 
-          if(!req.body || !req.body.id || !req.body.codigo || !req.body.nome || !req.body.cpf || !req.body.sexo || !req.body.email){
-          return res.status(400).json({message: 'Requisição inválida'});
+          if(!req?.params?.id || !req.body || !req.body.codigo || !req.body.nome || !req.body.cpf || !req.body.sexo || !req.body.email){
+           return res.status(400).json({message: 'Requisição inválida'});
           }
 
           const body : IClienteRepository = req.body;
 
-          const data = await model.update_clientes(body);
+          const data = await model.update_clientes(body, parseInt(req.params.id));
 
           if(data?.error){
               return res.status(400).json({message: data.error});

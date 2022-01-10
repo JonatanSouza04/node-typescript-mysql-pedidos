@@ -8,7 +8,7 @@ class Cliente {
         try {
 
             const conn = await connect();
-            const data = await conn.query("SELECT * FROM clientes;");
+            const data = await conn.query("SELECT * FROM clientes ORDER BY nome;");
 
             return data[0];
 
@@ -70,7 +70,7 @@ class Cliente {
          
     }
 
-    public async update_clientes(body: Omit<IClienteRepository,"id">): Promise<any> {
+    public async update_clientes(body: IClienteRepository, id: number): Promise<any> {
 
         try {
 
@@ -83,7 +83,7 @@ class Cliente {
                  body.cpf,
                  body.sexo,
                  body.email,
-                 body.id
+                 id
                ]);
 
             return {data: 'updated'};

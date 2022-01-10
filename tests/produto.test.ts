@@ -1,3 +1,6 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 import Produto from '../src/models/produtos'
 import IProdutoRepository from '../src/repositories/IProdutoRepository';
 

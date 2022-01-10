@@ -1,5 +1,9 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 import Cliente from '../src/models/clientes'
 import IClienteRepository from '../src/repositories/IClienteRepository';
+
 
 const code = '111111';
 

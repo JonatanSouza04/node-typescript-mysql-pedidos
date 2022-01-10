@@ -1,3 +1,6 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 import Pedido from '../src/models/pedidos'
 import Cliente from '../src/models/clientes';
 

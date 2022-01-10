@@ -19,9 +19,12 @@ routes
     .delete('/produtos/:id', ProdutoController.delete)
 
     .get('/pedidos', PedidoController.get)
-    .get('/pedido/:id', PedidoController.getId)
+    .get('/pedidos/:id', PedidoController.getId)
+    .get('/pedidos/:id/itens', PedidoController.getItens)
     .post('/pedidos', PedidoController.post)
     .put('/pedidos/:id', PedidoController.put)
     .delete('/pedidos/:id', PedidoController.delete)
+    .post('/pedidos/:id/sendmail', PedidoController.sendEmail)
+    .post('/pedidos/:id/report', PedidoController.PDF)
 
 export default routes;

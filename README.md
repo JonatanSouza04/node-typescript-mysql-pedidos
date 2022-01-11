@@ -31,7 +31,20 @@
  >
  >MYSQL_DATABASE=vip
  >
- >MYSQL_PORT=3306   
+ >MYSQL_PORT=3306
+ >
+ >MAILTRAP_HOST=smtp.mailtrap.io
+ >
+ >MAILTRAP_PORT=2525
+ >
+ >MAILTRAP_USER=
+ >
+ >MAILTRAP_PASSWORD=
+ >
+
+### MailTrap
+ Utilizo o MailTrap para realizar os testes, favor criar uma conta gratuita e preencher as variáveis de ambiente com as configurações
+ https://mailtrap.io/  
  
 ### Utilizando o docker, faça o download da imagem do MySQL
  > docker pull mysql
@@ -138,3 +151,4 @@
    > POST: /pedidos/:id/sendmail
    > 
    > POST: /pedidos/:id/report
+   >

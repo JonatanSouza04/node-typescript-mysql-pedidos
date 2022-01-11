@@ -1,6 +1,7 @@
 import connect  from '../database/index';
 import IPedidoRepository from '../repositories/IPedidoRepository';
 import IPedidoItensRepository from '../repositories/IPedidoItensRepository';
+import modelCli from "../models/clientes";
 
 class Pedido {
 
@@ -201,14 +202,27 @@ class Pedido {
     public async detail_pedidos(id: number): Promise<any> {
 
         const conn  = await connect();
-        const data  = await conn.query("SELECT * FROM pedidos WHERE id = ?;",[id]);
-        const itens = await conn.query("SELECT * FROM pedidos_itens WHERE pedido = ?;",[id]);
+        const data  = await conn.query(`
+                            SELECT p.*, c.nome as cliente_nome, f.descricao as forma_pagto_descricao  
+                            FROM pedidos p INNER JOIN clientes c on p.cliente = c.id
+                                INNER JOIN forma_pagto f on p.forma_pagto = f.id
+                            WHERE p.id = ?;
+                            `
+                   ,[id]);
+
+        const itens = await conn.query(`
+                        SELECT i.*, p.nome as produto_nome  
+                        FROM pedidos_itens i INNER JOIN produtos p on i.produto = p.id
+                        WHERE i.pedido = ?;
+                      `,[id]);
 
         const pedido: any  = data[0];
-   
+        const cliente: any = await modelCli.get_cliente_id(pedido[0].cliente);
+     
         return {
             pedido: pedido[0],
-            itens: itens[0]
+            itens: itens[0],
+            cliente: cliente[0]
         } 
 
     }

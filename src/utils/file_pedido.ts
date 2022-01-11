@@ -6,20 +6,23 @@ export default async function createFilePedido(idPedido: number){
 
     return await new Promise( async (resolve, _) => {
 
-            const pedido = await Pedido.get_pedido_id(idPedido);
-            const itens = await Pedido.get_itens_pedido(idPedido);
+            const detail = await Pedido.detail_pedidos(idPedido);
 
-            const dadosPedido = pedido[0];
+            const pedido = detail.pedido;
+            const itens  = detail.itens;
+            const cliente = detail.cliente;
 
             let valor_total = 0;
 
             const HTML = `
                 <html>
-                <h3>Pedido de número: ${dadosPedido.id}</h3>
-                <h3>Cliente: ${dadosPedido.cliente_nome}</h3>
+                <h3>Pedido de número: ${pedido.id}</h3>
+                <h3>Cliente: ${pedido.cliente_nome}</h3>
+                <h3>E-mail: ${cliente.email}</h3>
+                <h3>CPF: ${cliente.cpf}</h3>
                 <hr />
-                    <h4>Observação:  ${dadosPedido.observacao}</h4>
-                    <h4>Forma de pagamento:  ${dadosPedido.forma_pagto_descricao}</h4>
+                    <h4>Observação:  ${pedido.observacao}</h4>
+                    <h4>Forma de pagamento:  ${pedido.forma_pagto_descricao}</h4>
                 <hr />
                 
                 <table>
@@ -51,11 +54,16 @@ export default async function createFilePedido(idPedido: number){
             const  options: any = { format: 'Letter' };
 
                 
-            pdf.create(HTML, options).toFile(`./files/pedido_${dadosPedido.id}.pdf`, function(err, res) {
+            pdf.create(HTML, options).toFile(`./files/pedido_${pedido.id}.pdf`, function(err, res) {
             if (err)
                 resolve({error: err})
 
-                resolve(res)
+                const result = {
+                    file: res,
+                    detail
+                }
+                
+                resolve(result)
 
             });
 

@@ -8,8 +8,11 @@ import modelPagto from "../models/forma_pagto";
 
 import IPedidoRepository from '../repositories/IPedidoRepository';
 import IPedidoItensRepository from '../repositories/IPedidoItensRepository';
+import ISendEmailRepository from '../repositories/ISendEmailRepository';
 
 import createFilePedido from '../utils/file_pedido';
+import sendEmail from '../utils/send_email';
+import { promises as fs} from 'fs';
 
 class PedidoController {
 
@@ -173,14 +176,39 @@ class PedidoController {
       }
 
       public async sendEmail( req: Request, res: Response): Promise<Response> {
-         return res.status(200).json({message: 'E-mail enviado com sucesso', detail: 'Não tenho um e-mail de teste para ser enviado, mas iria utilizar o Nodemailer'})
+
+         const id: number = req?.params?.id ? parseInt(req.params.id) : 0;
+         const pedido: any = await createFilePedido(id);
+         const path: string = pedido.file.filename;
+         
+         const emailRegexp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+
+         if(pedido.detail.cliente.email === '' ||pedido.detail.cliente.email === null || !emailRegexp.test(pedido.detail.cliente.email) ){
+           return res.status(404).json({message: 'E-mail do cliente inválido'});
+         }
+        
+         const data = await fs.readFile(path);
+         const envio: ISendEmailRepository = {
+                  para: pedido.detail.cliente.email,
+                  assunto: `Pedido de Número ${req.params.id}`,
+                  mensagem: `<h1>Olá ${pedido.detail.cliente.nome}, você está recebendo o e-mail do pedido ${req.params.id}</h1>`,
+                  anexos: [{
+                      filename: `Pedido_${req.params.id}.pdf`,
+                      content: data 
+                  }]
+          };
+      
+         await sendEmail(envio); 
+
+         return res.status(200).json({message: 'E-mail enviado com sucesso', email: pedido.detail.cliente.email})
+
       }
 
       public async PDF( req: Request, res: Response) {
           
           const id: number = req?.params?.id ? parseInt(req.params.id) : 0;
           const pedido: any = await createFilePedido(id);
-          const path: string = pedido.filename;
+          const path: string = pedido.file.filename;
 
           res.setHeader('Content-disposition', `attachment; filename=${path}`);
           res.setHeader('Content-type', 'application/pdf');
